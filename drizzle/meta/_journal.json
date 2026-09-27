@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1790358847657,
+      "tag": "0000_mature_marten_broadcloak",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1790359165629,
+      "tag": "0001_first_susan_delgado",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1790427113818,
+      "tag": "0002_optimal_talkback",
+      "breakpoints": true
+    }
+  ]
+}

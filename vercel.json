@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "buildCommand": "vite build",
+  "outputDirectory": "dist/public",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/uploads/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/evidence/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/((?!api|uploads|evidence).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "sourceType": "DEMO_AUGMENTATION",
+  "datasetDescription": "Synthetic training dataset of financial expenditure distributions for Isolation Forest anomaly calibration.",
+  "modelVersion": "v1.0-prototype",
+  "records": [
+    { "sanctioned_amount": 5000000, "spent_amount": 2200000, "utilization_rate": 0.44, "expenditure_velocity": 366666, "voucher_count": 4, "avg_voucher_amount": 550000 },
+    { "sanctioned_amount": 7500000, "spent_amount": 4500000, "utilization_rate": 0.60, "expenditure_velocity": 500000, "voucher_count": 6, "avg_voucher_amount": 750000 },
+    { "sanctioned_amount": 3000000, "spent_amount": 1800000, "utilization_rate": 0.60, "expenditure_velocity": 300000, "voucher_count": 3, "avg_voucher_amount": 600000 },
+    { "sanctioned_amount": 10000000, "spent_amount": 8000000, "utilization_rate": 0.80, "expenditure_velocity": 800000, "voucher_count": 8, "avg_voucher_amount": 1000000 },
+    { "sanctioned_amount": 4500000, "spent_amount": 1500000, "utilization_rate": 0.33, "expenditure_velocity": 300000, "voucher_count": 3, "avg_voucher_amount": 500000 },
+    { "sanctioned_amount": 6000000, "spent_amount": 3600000, "utilization_rate": 0.60, "expenditure_velocity": 450000, "voucher_count": 5, "avg_voucher_amount": 720000 },
+    { "sanctioned_amount": 8500000, "spent_amount": 6200000, "utilization_rate": 0.73, "expenditure_velocity": 688888, "voucher_count": 7, "avg_voucher_amount": 885714 },
+    { "sanctioned_amount": 3500000, "spent_amount": 2100000, "utilization_rate": 0.60, "expenditure_velocity": 350000, "voucher_count": 4, "avg_voucher_amount": 525000 },
+    { "sanctioned_amount": 9000000, "spent_amount": 5400000, "utilization_rate": 0.60, "expenditure_velocity": 600000, "voucher_count": 6, "avg_voucher_amount": 900000 },
+    { "sanctioned_amount": 4000000, "spent_amount": 2800000, "utilization_rate": 0.70, "expenditure_velocity": 400000, "voucher_count": 4, "avg_voucher_amount": 700000 },
+    { "sanctioned_amount": 6500000, "spent_amount": 3900000, "utilization_rate": 0.60, "expenditure_velocity": 433333, "voucher_count": 5, "avg_voucher_amount": 780000 },
+    { "sanctioned_amount": 12000000, "spent_amount": 9600000, "utilization_rate": 0.80, "expenditure_velocity": 960000, "voucher_count": 10, "avg_voucher_amount": 960000 },
+    { "sanctioned_amount": 5500000, "spent_amount": 2750000, "utilization_rate": 0.50, "expenditure_velocity": 392857, "voucher_count": 4, "avg_voucher_amount": 687500 },
+    { "sanctioned_amount": 4800000, "spent_amount": 2400000, "utilization_rate": 0.50, "expenditure_velocity": 342857, "voucher_count": 4, "avg_voucher_amount": 600000 },
+    { "sanctioned_amount": 7000000, "spent_amount": 4200000, "utilization_rate": 0.60, "expenditure_velocity": 525000, "voucher_count": 6, "avg_voucher_amount": 700000 },
+    { "sanctioned_amount": 8000000, "spent_amount": 5600000, "utilization_rate": 0.70, "expenditure_velocity": 622222, "voucher_count": 7, "avg_voucher_amount": 800000 },
+    { "sanctioned_amount": 3200000, "spent_amount": 1600000, "utilization_rate": 0.50, "expenditure_velocity": 320000, "voucher_count": 3, "avg_voucher_amount": 533333 },
+    { "sanctioned_amount": 9500000, "spent_amount": 7600000, "utilization_rate": 0.80, "expenditure_velocity": 760000, "voucher_count": 8, "avg_voucher_amount": 950000 },
+    { "sanctioned_amount": 5200000, "spent_amount": 3120000, "utilization_rate": 0.60, "expenditure_velocity": 445714, "voucher_count": 5, "avg_voucher_amount": 624000 },
+    { "sanctioned_amount": 6200000, "spent_amount": 3720000, "utilization_rate": 0.60, "expenditure_velocity": 465000, "voucher_count": 5, "avg_voucher_amount": 744000 },
+    { "sanctioned_amount": 10000000, "spent_amount": 9900000, "utilization_rate": 0.99, "expenditure_velocity": 4950000, "voucher_count": 1, "avg_voucher_amount": 9900000 },
+    { "sanctioned_amount": 5000000, "spent_amount": 4900000, "utilization_rate": 0.98, "expenditure_velocity": 4900000, "voucher_count": 1, "avg_voucher_amount": 4900000 },
+    { "sanctioned_amount": 8000000, "spent_amount": 200000, "utilization_rate": 0.025, "expenditure_velocity": 12500, "voucher_count": 1, "avg_voucher_amount": 200000 }
+  ]
+}

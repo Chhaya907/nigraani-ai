@@ -1,0 +1,8 @@
+node_modules
+.git
+.vercel
+uploads
+dist
+.webdev
+.manus-logs
+ml-service
