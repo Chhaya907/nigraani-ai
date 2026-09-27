@@ -1,9 +1,9 @@
-import type { CookieOptions, Request } from "express";
+import type { CookieOptions } from "express";
 
-function isSecureRequest(req: Request) {
-  if (req.protocol === "https") return true;
+function isSecureRequest(req: any) {
+  if (req?.protocol === "https") return true;
 
-  const forwardedProto = (req as any).headers?.["x-forwarded-proto"];
+  const forwardedProto = req?.headers?.["x-forwarded-proto"];
   if (!forwardedProto) return false;
 
   const protoList: string[] = Array.isArray(forwardedProto)
@@ -16,7 +16,7 @@ function isSecureRequest(req: Request) {
 }
 
 export function getSessionCookieOptions(
-  req: Request
+  req: any
 ): CookieOptions {
   const isSecure = isSecureRequest(req);
   return {

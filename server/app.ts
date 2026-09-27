@@ -23,7 +23,7 @@ export function createExpressApp(): Express {
   }
 
   // Health check endpoint for deployment monitoring
-  app.get(["/api/health", "/health"], (_req, res) => {
+  app.get(["/api/health", "/health"], (_req: any, res: any) => {
     res.json({
       status: "ok",
       service: "Nigraani AI Platform",
