@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "vite build",
+  "buildCommand": "pnpm run build",
   "outputDirectory": "dist/public",
   "rewrites": [
     {

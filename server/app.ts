@@ -8,19 +8,15 @@ import { createContext } from "./_core/context";
 import { evidenceRouter } from "./evidenceRoute";
 import fs from "fs";
 import path from "path";
+import { getUploadsBaseDir } from "./uploadsDir";
 
 export function createExpressApp(): Express {
   const app = express();
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-  // Uploads directory fallback
-  const uploadsDir = path.resolve(process.cwd(), "uploads");
-  if (!fs.existsSync(uploadsDir)) {
-    try {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    } catch (_) {}
-  }
+  // Uploads directory fallback (safe for both local filesystem and serverless /tmp)
+  const uploadsDir = getUploadsBaseDir();
 
   // Health check endpoint for deployment monitoring
   app.get(["/api/health", "/health"], (_req: any, res: any) => {

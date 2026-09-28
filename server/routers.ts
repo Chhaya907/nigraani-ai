@@ -3,18 +3,18 @@ import fs from "fs";
 import path from "path";
 import { COOKIE_NAME } from "@shared/const";
 import { canRolePerform, DEMO_ACCOUNTS, getRoleSnapshot, ROLE_DEFINITIONS, type PermissionAction, type RoleKey } from "../shared/monitoring";
-import { getSessionCookieOptions } from "./_core/cookies";
-import { DEMO_SESSION_COOKIE } from "./_core/context";
-import { systemRouter } from "./_core/systemRouter";
-import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import { getSessionCookieOptions } from "./_core/cookies.js";
+import { DEMO_SESSION_COOKIE } from "./_core/context.js";
+import { systemRouter } from "./_core/systemRouter.js";
+import { protectedProcedure, publicProcedure, router } from "./_core/trpc.js";
 import { TRPCError } from "@trpc/server";
 import { desc, eq, and, or, ne } from "drizzle-orm";
-import { getDb } from "./db";
-import { projects, dataImports, dataProvenance, anomalies, riskAssessments, cases, projectUpdates, expenditures, evidence, auditLogs } from "../drizzle/schema";
-import { ingestOfficialMpladsRecords, ingestBaseOfficialDataset } from "./services/mpladsIngestion";
-import { runFullAiEvaluation, evaluateSingleProject } from "./services/anomalyService";
-import { buildLiveSnapshot } from "./services/dashboardService";
-import { perceptualHashEngine } from "./ml/perceptualHash";
+import { getDb } from "./db.js";
+import { projects, dataImports, dataProvenance, anomalies, riskAssessments, cases, projectUpdates, expenditures, evidence, auditLogs } from "../drizzle/schema.js";
+import { ingestOfficialMpladsRecords, ingestBaseOfficialDataset } from "./services/mpladsIngestion.js";
+import { runFullAiEvaluation, evaluateSingleProject } from "./services/anomalyService.js";
+import { buildLiveSnapshot } from "./services/dashboardService.js";
+import { perceptualHashEngine } from "./ml/perceptualHash.js";
 import { nanoid } from "nanoid";
 import {
   generateInspectionDocumentPdf,
@@ -23,7 +23,8 @@ import {
   generateEvidenceRegisterPdf,
   generateActionFollowupPdf,
   generateWorkspaceExportPdf,
-} from "./services/pdfReportService";
+} from "./services/pdfReportService.js";
+import { getUploadsEvidenceDir } from "./uploadsDir.js";
 
 const permissionActions = [
   "processRecommendation",
@@ -49,10 +50,10 @@ const auditEvents: Array<{
   timestamp: string;
   comments: string;
 }> = [
-  { id: "AUDIT-001", role: "mospi", user: "A. Qureshi", action: "National overview reviewed", targetId: "PORTFOLIO-2026", timestamp: "23 Sept 2026 · 09:42 IST", comments: "Reviewed current national risk concentration." },
-  { id: "AUDIT-002", role: "district", user: "P. Yadav", action: "Evidence uploaded", targetId: "MPLAD-2025-001", timestamp: "22 Sept 2026 · 16:18 IST", comments: "Measurement book and site photograph added." },
-  { id: "AUDIT-003", role: "cag", user: "S. Iyer", action: "Audit observation recorded", targetId: "AUD-26-014", timestamp: "20 Sept 2026 · 11:06 IST", comments: "Fund movement variance sent for management response." },
-];
+    { id: "AUDIT-001", role: "mospi", user: "A. Qureshi", action: "National overview reviewed", targetId: "PORTFOLIO-2026", timestamp: "23 Sept 2026 · 09:42 IST", comments: "Reviewed current national risk concentration." },
+    { id: "AUDIT-002", role: "district", user: "P. Yadav", action: "Evidence uploaded", targetId: "MPLAD-2025-001", timestamp: "22 Sept 2026 · 16:18 IST", comments: "Measurement book and site photograph added." },
+    { id: "AUDIT-003", role: "cag", user: "S. Iyer", action: "Audit observation recorded", targetId: "AUD-26-014", timestamp: "20 Sept 2026 · 11:06 IST", comments: "Fund movement variance sent for management response." },
+  ];
 
 const userSummary = (user: NonNullable<import("../drizzle/schema").User>) => ({
   id: user.id,
@@ -106,16 +107,14 @@ function saveEvidenceFile({
     ext = ".pdf";
   }
 
-  const uploadsEvidenceDir = path.resolve(process.cwd(), "uploads", "evidence");
-  if (!fs.existsSync(uploadsEvidenceDir)) {
-    fs.mkdirSync(uploadsEvidenceDir, { recursive: true });
-  }
-
+  const uploadsEvidenceDir = getUploadsEvidenceDir();
   const cleanOriginal = (fileName || `evidence${ext}`).replace(/[^a-zA-Z0-9._-]/g, "_");
   const diskFileName = `${evidenceCode}_${Date.now()}_${cleanOriginal}`;
   const diskFilePath = path.join(uploadsEvidenceDir, diskFileName);
 
-  fs.writeFileSync(diskFilePath, buffer);
+  try {
+    fs.writeFileSync(diskFilePath, buffer);
+  } catch (_) { }
 
   return {
     fileUrl: `/uploads/evidence/${diskFileName}`,
@@ -443,9 +442,8 @@ export const appRouter = router({
         const caseNumber = `AUD-${year}-${nanoid(4).toUpperCase()}`;
         const auditorName = ctx.user.name ? (ctx.user.name.includes("CAG") || ctx.user.name.includes("Audit") ? ctx.user.name : `${ctx.user.name}, Senior Audit Officer (CAG)`) : "S. Iyer, Senior Audit Officer (CAG)";
 
-        const description = `${input.observation.trim()}${
-          input.recommendation?.trim() ? `\n\nAudit Recommendation: ${input.recommendation.trim()}` : ""
-        }${input.financialImplication ? `\nFinancial Implication: ₹${input.financialImplication.toLocaleString("en-IN")}` : ""}`;
+        const description = `${input.observation.trim()}${input.recommendation?.trim() ? `\n\nAudit Recommendation: ${input.recommendation.trim()}` : ""
+          }${input.financialImplication ? `\nFinancial Implication: ₹${input.financialImplication.toLocaleString("en-IN")}` : ""}`;
 
         // 1. Insert into cases table as AUDIT_OBSERVATION
         const [caseResult] = await db.insert(cases).values({
@@ -617,10 +615,7 @@ export const appRouter = router({
             }
           } else if (input.evidenceCategory && input.evidenceCategory !== "SITE_PHOTO") {
             try {
-              const uploadsEvidenceDir = path.resolve(process.cwd(), "uploads", "evidence");
-              if (!fs.existsSync(uploadsEvidenceDir)) {
-                fs.mkdirSync(uploadsEvidenceDir, { recursive: true });
-              }
+              const uploadsEvidenceDir = getUploadsEvidenceDir();
               const cleanDocName = path.basename(storedFileName).replace(/[^a-zA-Z0-9._-]/g, "_");
               const finalDocName = cleanDocName.toLowerCase().endsWith(".pdf") ? cleanDocName : `${cleanDocName}.pdf`;
               const targetDocPath = path.join(uploadsEvidenceDir, finalDocName);
@@ -631,7 +626,9 @@ export const appRouter = router({
                 uploadedBy: ctx.user.name ?? "District Officer",
                 date: new Date().toLocaleDateString("en-IN"),
               });
-              fs.writeFileSync(targetDocPath, pdfBuf);
+              try {
+                fs.writeFileSync(targetDocPath, pdfBuf);
+              } catch (_) { }
               savedFileUrl = `/uploads/evidence/${finalDocName}`;
               storedFileName = finalDocName;
               fileSize = pdfBuf.length;
@@ -816,12 +813,12 @@ export const appRouter = router({
         // 2. Delete the stored binary file from uploads/evidence/ when appropriate
         const candidatePaths: string[] = [];
         if (ev.fileUrl && ev.fileUrl.startsWith("/uploads/evidence/")) {
-          candidatePaths.push(path.resolve(process.cwd(), "uploads", "evidence", path.basename(ev.fileUrl)));
+          candidatePaths.push(path.join(getUploadsEvidenceDir(), path.basename(ev.fileUrl)));
         }
         if (ev.filePath) {
           const resolvedPath = path.isAbsolute(ev.filePath)
             ? ev.filePath
-            : path.resolve(process.cwd(), "uploads", "evidence", path.basename(ev.filePath));
+            : path.join(getUploadsEvidenceDir(), path.basename(ev.filePath));
           candidatePaths.push(resolvedPath);
         }
 
@@ -1039,10 +1036,7 @@ export const appRouter = router({
             }
           } else {
             try {
-              const uploadsEvidenceDir = path.resolve(process.cwd(), "uploads", "evidence");
-              if (!fs.existsSync(uploadsEvidenceDir)) {
-                fs.mkdirSync(uploadsEvidenceDir, { recursive: true });
-              }
+              const uploadsEvidenceDir = getUploadsEvidenceDir();
               const cleanDocName = path.basename(storedFileName).replace(/[^a-zA-Z0-9._-]/g, "_");
               const finalDocName = cleanDocName.toLowerCase().endsWith(".pdf") ? cleanDocName : `${cleanDocName}.pdf`;
               const targetDocPath = path.join(uploadsEvidenceDir, finalDocName);
@@ -1053,7 +1047,9 @@ export const appRouter = router({
                 uploadedBy: ctx.user.name ?? "Investigator",
                 date: new Date().toLocaleDateString("en-IN"),
               });
-              fs.writeFileSync(targetDocPath, pdfBuf);
+              try {
+                fs.writeFileSync(targetDocPath, pdfBuf);
+              } catch (_) { }
               savedFileUrl = `/uploads/evidence/${finalDocName}`;
               storedFileName = finalDocName;
               fileSize = pdfBuf.length;

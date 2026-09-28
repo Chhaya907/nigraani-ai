@@ -9,6 +9,7 @@ import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fs from "fs";
 import path from "path";
+import { getUploadsEvidenceDir } from "./uploadsDir";
 
 function getS3Config() {
   const bucket = process.env.AWS_S3_BUCKET || process.env.S3_BUCKET;
@@ -101,12 +102,11 @@ export async function storagePut(
   }
 
   // 3. Fallback: Local filesystem storage
-  const uploadsEvidenceDir = path.resolve(process.cwd(), "uploads", "evidence");
-  if (!fs.existsSync(uploadsEvidenceDir)) {
-    fs.mkdirSync(uploadsEvidenceDir, { recursive: true });
-  }
+  const uploadsEvidenceDir = getUploadsEvidenceDir();
   const localFilePath = path.join(uploadsEvidenceDir, key);
-  fs.writeFileSync(localFilePath, buf);
+  try {
+    fs.writeFileSync(localFilePath, buf);
+  } catch (_) {}
   return { key, url: `/uploads/evidence/${key}` };
 }
 

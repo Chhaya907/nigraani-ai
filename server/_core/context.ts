@@ -1,8 +1,8 @@
 import { COOKIE_NAME } from "@shared/const";
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import type { User } from "../../drizzle/schema";
-import { DEMO_ACCOUNTS, type RoleKey } from "../../shared/monitoring";
-import { sdk } from "./sdk";
+import { DEMO_ACCOUNTS, type RoleKey } from "../../shared/monitoring.js";
+import { sdk } from "./sdk.js";
 
 export const DEMO_SESSION_COOKIE = "nigraani_demo_session";
 

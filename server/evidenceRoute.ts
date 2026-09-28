@@ -4,6 +4,7 @@ import path from "path";
 import { getDb } from "./db";
 import { evidence, projects, anomalies, cases, projectUpdates, riskAssessments } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
+import { getUploadsEvidenceDir } from "./uploadsDir";
 import {
   generateInspectionDocumentPdf,
   generateProjectDetailPdf,
@@ -19,7 +20,7 @@ export const evidenceRouter = Router();
 evidenceRouter.get("/uploads/evidence/:filename", async (req: any, res: any) => {
   const rawParam = req.params.filename;
   const filename = path.basename(rawParam);
-  const uploadsEvidenceDir = path.resolve(process.cwd(), "uploads", "evidence");
+  const uploadsEvidenceDir = getUploadsEvidenceDir();
   const filePath = path.join(uploadsEvidenceDir, filename);
 
   const sendFileWithHeaders = (absPath: string, name: string) => {
@@ -68,10 +69,9 @@ evidenceRouter.get("/uploads/evidence/:filename", async (req: any, res: any) => 
           date: matched.createdAt ? new Date(matched.createdAt).toLocaleDateString("en-IN") : undefined,
         });
 
-        if (!fs.existsSync(uploadsEvidenceDir)) {
-          fs.mkdirSync(uploadsEvidenceDir, { recursive: true });
-        }
-        fs.writeFileSync(filePath, buf);
+        try {
+          fs.writeFileSync(filePath, buf);
+        } catch (_) {}
         return sendFileWithHeaders(filePath, filename);
       }
     }
