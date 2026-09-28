@@ -350,8 +350,8 @@ export const appRouter = router({
           sourceType: "OPERATIONAL_UPDATE",
           createdAt: new Date(),
           updatedAt: new Date(),
-        });
-        const projectId = insertResult.insertId;
+        }).returning({ id: projects.id });
+        const projectId = insertResult.id;
 
         // 2. Insert initial project update entry
         await db.insert(projectUpdates).values({
@@ -463,7 +463,7 @@ export const appRouter = router({
           sourceType: "OPERATIONAL_UPDATE",
           createdAt: new Date(),
           updatedAt: new Date(),
-        });
+        }).returning({ id: cases.id });
 
         // 2. Create immutable audit log in audit_logs
         const auditCode = `AUD-LOG-${nanoid(8).toUpperCase()}`;
@@ -499,7 +499,7 @@ export const appRouter = router({
         return {
           success: true,
           caseNumber,
-          caseId: caseResult.insertId,
+          caseId: caseResult.id,
           projectCode: project.projectCode,
           message: `Audit finding ${caseNumber} recorded successfully and sent for management response.`,
         };
