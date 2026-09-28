@@ -1,6 +1,6 @@
-import { createExpressApp } from "../server/app";
+import { createExpressApp } from "../dist/api.js";
 
-const app: any = createExpressApp();
+const app = createExpressApp();
 
 export default function handler(req: any, res: any) {
   return app(req, res);

@@ -2,6 +2,15 @@
   "version": 2,
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist/public",
+  "functions": {
+    "api/index.ts": {
+      "includeFiles": [
+        "server/**",
+        "shared/**",
+        "drizzle/**"
+      ]
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
