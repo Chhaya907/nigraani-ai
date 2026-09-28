@@ -1,1 +1,0 @@
-ALTER TABLE `users` MODIFY COLUMN `role` enum('mospi','state','district','mp','cag') NOT NULL DEFAULT 'mospi';

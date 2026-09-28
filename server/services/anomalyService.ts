@@ -276,7 +276,8 @@ export async function runFullAiEvaluation(initiatedBy: string = "MoSPI AI Engine
         detectionMetadata: { matchedProject: dupRes.projectB, modelVersion: dupRes.modelVersion },
         sourceType: proj.sourceType,
       };
-      await db.insert(anomalies).values(anomalyInsert).onDuplicateKeyUpdate({
+      await db.insert(anomalies).values(anomalyInsert).onConflictDoUpdate({
+        target: anomalies.anomalyCode,
         set: { score: dupScore, reasoning: dupExplanation, severity: anomalyInsert.severity, updatedAt: new Date() },
       });
     }
@@ -296,7 +297,8 @@ export async function runFullAiEvaluation(initiatedBy: string = "MoSPI AI Engine
         detectionMetadata: { features: fundRes.features, topDriver: fundRes.topDriver },
         sourceType: proj.sourceType,
       };
-      await db.insert(anomalies).values(anomalyInsert).onDuplicateKeyUpdate({
+      await db.insert(anomalies).values(anomalyInsert).onConflictDoUpdate({
+        target: anomalies.anomalyCode,
         set: { score: fundRes.score, reasoning: fundRes.explanation, severity: anomalyInsert.severity, updatedAt: new Date() },
       });
     }
@@ -316,7 +318,8 @@ export async function runFullAiEvaluation(initiatedBy: string = "MoSPI AI Engine
         detectionMetadata: { importances: delayRes.featureImportances, features: delayRes.features },
         sourceType: proj.sourceType,
       };
-      await db.insert(anomalies).values(anomalyInsert).onDuplicateKeyUpdate({
+      await db.insert(anomalies).values(anomalyInsert).onConflictDoUpdate({
+        target: anomalies.anomalyCode,
         set: { score: delayRes.score, reasoning: delayRes.explanation, severity: anomalyInsert.severity, updatedAt: new Date() },
       });
     }
@@ -336,7 +339,8 @@ export async function runFullAiEvaluation(initiatedBy: string = "MoSPI AI Engine
         detectionMetadata: { matchedEvidence: reuseRes.matchedEvidence },
         sourceType: proj.sourceType,
       };
-      await db.insert(anomalies).values(anomalyInsert).onDuplicateKeyUpdate({
+      await db.insert(anomalies).values(anomalyInsert).onConflictDoUpdate({
+        target: anomalies.anomalyCode,
         set: { score: reuseRes.score, reasoning: reuseRes.explanation, severity: anomalyInsert.severity, updatedAt: new Date() },
       });
     }
@@ -359,7 +363,8 @@ export async function runFullAiEvaluation(initiatedBy: string = "MoSPI AI Engine
         openedBy: initiatedBy,
         sourceType: proj.sourceType,
       };
-      await db.insert(cases).values(caseInsert).onDuplicateKeyUpdate({
+      await db.insert(cases).values(caseInsert).onConflictDoUpdate({
+        target: cases.caseNumber,
         set: { priority: caseInsert.priority, description: caseInsert.description, updatedAt: new Date() },
       });
       caseOpened = true;

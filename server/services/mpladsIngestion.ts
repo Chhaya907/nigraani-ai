@@ -261,8 +261,8 @@ export async function ingestOfficialMpladsRecords(
     };
 
     // Insert project
-    const [projectResult] = await db.insert(projects).values(projectData);
-    const insertedProjectId = (projectResult as any)?.insertId || (projectResult as any)?.[0]?.insertId;
+    const [projectResult] = await db.insert(projects).values(projectData).returning({ id: projects.id });
+    const insertedProjectId = projectResult?.id;
 
     // 4. Data Provenance Record
     const provenanceData: InsertDataProvenance = {
@@ -275,8 +275,8 @@ export async function ingestOfficialMpladsRecords(
       verifiedByRole: "mospi",
       notes: `Ingested from official MoSPI MPLADS record ID ${workId}`,
     };
-    const [provResult] = await db.insert(dataProvenance).values(provenanceData);
-    const provId = (provResult as any)?.insertId || (provResult as any)?.[0]?.insertId;
+    const [provResult] = await db.insert(dataProvenance).values(provenanceData).returning({ id: dataProvenance.id });
+    const provId = provResult?.id;
 
     if (insertedProjectId && provId) {
       await db.update(projects).set({ provenanceId: provId }).where(eq(projects.id, insertedProjectId));
